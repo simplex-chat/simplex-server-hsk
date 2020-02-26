@@ -1,0 +1,36 @@
+cabal-version: 1.12
+
+-- This file has been generated from package.yaml by hpack version 0.31.2.
+--
+-- see: https://github.com/sol/hpack
+--
+-- hash: 928be4c3db67420b7d4931901933a94660991e56e47583822c3b73d2ae30cc8e
+
+name:           simplex-server
+version:        0.1.0.0
+category:       Web
+homepage:       https://github.com/githubuser/simplex-server#readme
+author:         Author name here
+maintainer:     example@example.com
+copyright:      2020 Author name here
+license:        BSD3
+license-file:   LICENSE
+build-type:     Simple
+extra-source-files:
+    README.md
+
+executable simplex-server
+  main-is: Main.hs
+  other-modules:
+      Paths_simplex_server
+  hs-source-dirs:
+      src
+  build-depends:
+      aeson
+    , base >=4.7 && <5
+    , base64-bytestring
+    , bytestring
+    , servant-server
+    , wai
+    , warp
+  default-language: Haskell2010
