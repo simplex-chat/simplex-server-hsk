@@ -4,7 +4,7 @@ cabal-version: 1.12
 --
 -- see: https://github.com/sol/hpack
 --
--- hash: 928be4c3db67420b7d4931901933a94660991e56e47583822c3b73d2ae30cc8e
+-- hash: 87f3e295adfa9160a93a0d0efe5ca7eb40477bfb5d4907b26f2cf37179489048
 
 name:           simplex-server
 version:        0.1.0.0
@@ -25,6 +25,7 @@ executable simplex-server
       Paths_simplex_server
   hs-source-dirs:
       src
+  ghc-options: -Wall -Wcompat -Werror=incomplete-patterns
   build-depends:
       aeson
     , base >=4.7 && <5

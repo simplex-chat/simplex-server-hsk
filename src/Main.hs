@@ -1,47 +1,39 @@
 {-# LANGUAGE DataKinds       #-}
 {-# LANGUAGE TemplateHaskell #-}
 {-# LANGUAGE TypeOperators   #-}
+{-# LANGUAGE DeriveGeneric   #-}
+{-# LANGUAGE DeriveAnyClass  #-}
 
 module Main where
 
 import Data.Aeson
-import Data.Aeson.TH
-import Data.ByteString
+import GHC.Generics
 import Network.Wai
 import Network.Wai.Handler.Warp
 import Servant
 
-data Connection
-  = NewConnReq
-  { recipientKey :: ByteString
-  }
-  | NewConn
+type Base64EncodedString = String
+
+data NewConnectionRequest = NewConnectionRequest
+  { recipientKey :: Base64EncodedString
+  } deriving (Show, Generic, FromJSON)
+
+data NewConnectionResponse = NewConnectionResponse
   { recipientUri :: String
   , senderUri :: String
-  }
+  } deriving (Show, Generic, ToJSON)
 
--- data Connection = Connection
---   { recipientId :: Word16
---   , senderId :: Word16
---   , recipientKey :: ByteString
---   , senderKey :: ByteString
---   } deriving (Eq, Show, Generic)
-
--- instance ToJSON Connection
-
--- type API = "connection" :> Post '[JSON] [Connection]
 
 data User = User
   { userId        :: Int
   , userFirstName :: String
   , userLastName  :: String
-  } deriving (Eq, Show)
+  } deriving (Eq, Show, Generic, ToJSON)
 
--- instance ToJSON User
-$(deriveJSON defaultOptions ''User)
 
 type API = "users" :> Get '[JSON] [User]
-      :<|> "connection" :> ReqBody '[JSON] Connection :> Post '[JSON] Connection
+      :<|> "connection" :> ReqBody '[JSON] NewConnectionRequest
+                        :> Post '[JSON] NewConnectionResponse
 
 startApp :: IO ()
 startApp = run 8080 app
@@ -57,12 +49,12 @@ server = getUsers
     :<|> createConnection
     
   where
-    getUsers :: () -> [User]
+    getUsers :: Handler [User]
     getUsers = return users
 
-    createConnection :: Connection -> Connection
-    createConnection NewConnReq {recipientKey=rk} =
-      return NewConn {recipientUri="", senderUri=""}
+    createConnection :: NewConnectionRequest -> Handler NewConnectionResponse
+    createConnection NewConnectionRequest {recipientKey=_} =
+      return NewConnectionResponse {recipientUri="", senderUri=""}
 
 users :: [User]
 users = [ User 1 "Isaac" "Newton"
